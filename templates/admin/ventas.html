@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block titulo %}Ventas - Inkafarma{% endblock %}
+{% block estilos %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ventas.css') }}">
+{% endblock %}
+{% block contenido %}
+
+<div class="ven-admin-hero">
+  <div class="ven-admin-hero-izq">
+    <div class="ven-admin-icono"><i class="fa-solid fa-clipboard-list"></i></div>
+    <div>
+      <h1 class="ven-admin-titulo">Ventas</h1>
+      <p class="ven-admin-subtitulo">Historial de boletas registradas por el equipo de caja</p>
+      <div class="ven-admin-linea"></div>
+    </div>
+  </div>
+  <div class="ven-admin-hero-der">
+    <div class="ven-admin-indicador">
+      <span class="ven-admin-indicador-icono"><i class="fa-solid fa-receipt"></i></span>
+      <div>
+        <p class="ven-admin-indicador-label">Ventas de hoy</p>
+        <p class="ven-admin-indicador-valor" id="ventasHoy">0</p>
+      </div>
+    </div>
+    <div class="ven-admin-exportes">
+      <a href="{{ url_for('reportes_api.ventas_excel') }}" class="ven-admin-export" title="Exportar a Excel" aria-label="Exportar ventas a Excel">
+        <i class="fa-solid fa-file-excel"></i>
+      </a>
+      <a href="{{ url_for('reportes_api.ventas_pdf') }}" class="ven-admin-export" title="Exportar a PDF" aria-label="Exportar ventas a PDF">
+        <i class="fa-solid fa-file-pdf"></i>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="ven-admin-card">
+  <input id="buscador" type="text" aria-label="Buscar ventas"
+         placeholder="Buscar por N° de boleta, cliente o vendedor..."
+         oninput="paginaActual = 1; renderTabla()">
+  <div class="overflow-x-auto">
+    <table class="ven-admin-tabla">
+      <thead><tr><th>N° Boleta</th><th>Cliente</th><th>Vendedor</th><th>Fecha</th><th>Método de pago</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <div id="paginacion"></div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin_ventas.js') }}"></script>
+{% endblock %}

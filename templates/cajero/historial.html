@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block titulo %}Historial de ventas - Inkafarma{% endblock %}
+{% block estilos %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/venta_pos.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/historial.css') }}">
+{% endblock %}
+{% block contenido %}
+
+<div class="his-hero">
+  <div class="his-hero-izq">
+    <div class="his-icono"><i class="fa-solid fa-clock-rotate-left"></i></div>
+    <div>
+      <h1 class="his-titulo">Historial de ventas</h1>
+      <p class="his-subtitulo">Registro de boletas y ventas realizadas</p>
+      <div class="his-linea"></div>
+    </div>
+  </div>
+  <div class="his-periodo">
+    <i class="fa-solid fa-calendar-days"></i>
+    <select id="filtroPeriodo" aria-label="Filtrar por período" onchange="paginaActual = 1; renderTabla()">
+      <option value="hoy">Hoy</option>
+      <option value="7">Últimos 7 días</option>
+      <option value="30" selected>Últimos 30 días</option>
+      <option value="mes">Este mes</option>
+    </select>
+  </div>
+</div>
+
+<div class="his-resumen">
+  <div class="his-resumen-seccion">
+    <span class="his-resumen-icono"><i class="fa-solid fa-receipt"></i></span>
+    <div>
+      <p class="his-resumen-label">Total vendido</p>
+      <p class="his-resumen-valor" id="totalVendidoPeriodo">S/ 0.00</p>
+    </div>
+  </div>
+  <div class="his-separador"></div>
+  <div class="his-resumen-seccion">
+    <span class="his-resumen-icono"><i class="fa-solid fa-cart-shopping"></i></span>
+    <div>
+      <p class="his-resumen-label">Boletas emitidas</p>
+      <p class="his-resumen-valor" id="boletasPeriodo">0</p>
+    </div>
+  </div>
+</div>
+
+<div class="his-buscar">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input id="buscador" type="text" aria-label="Buscar boletas"
+         placeholder="Buscar por N.º de boleta o cliente..." oninput="paginaActual = 1; renderTabla()">
+</div>
+
+<div class="his-tabla-card">
+  <div class="his-tabla-scroll">
+    <table class="his-tabla">
+      <thead>
+        <tr><th>N.º Boleta</th><th>Cliente</th><th>Fecha</th><th>Pago</th><th>Total</th><th>Acción</th></tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <div class="his-pie">
+    <span id="hisMostrando">Mostrando 0 de 0 registros</span>
+    <div id="paginacion" class="his-pag-controles"></div>
+  </div>
+</div>
+
+
+<div id="modalBoleta" class="modal-overlay hidden">
+  <div class="card w-full max-w-sm" id="boleta">
+    <div class="text-center mb-4">
+      <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Inkafarma" class="h-7 mx-auto mb-2">
+      <p class="font-extrabold text-gray-800 text-sm">Boleta de venta electrónica</p>
+      <p class="text-xs text-gray-400 font-mono" id="boletaNumero"></p>
+    </div>
+    <div class="text-xs text-gray-500 space-y-0.5 mb-3">
+      <p class="flex justify-between"><span>Cliente</span><span id="boletaCliente" class="text-gray-700 font-medium"></span></p>
+      <p class="flex justify-between"><span>Fecha</span><span id="boletaFecha" class="text-gray-700"></span></p>
+      <p class="flex justify-between"><span>Vendedor</span><span id="boletaVendedor" class="text-gray-700"></span></p>
+      <p class="flex justify-between"><span>Pago</span><span id="boletaMetodo" class="text-gray-700"></span></p>
+      <p class="flex justify-between hidden" id="boletaFilaCupon"><span>Cupón</span><span id="boletaCupon" class="text-inka-green font-medium"></span></p>
+    </div>
+    <table class="w-full text-xs border-t border-dashed border-gray-200 pt-2">
+      <thead>
+        <tr class="text-gray-400 text-left"><th class="py-1 font-medium">Producto</th><th class="font-medium">Cant.</th><th class="text-right font-medium">Subtotal</th></tr>
+      </thead>
+      <tbody id="boletaItems"></tbody>
+    </table>
+    <div class="border-t border-dashed border-gray-200 pt-2 mt-2 text-sm space-y-1">
+      <div class="flex justify-between text-gray-500"><span>Subtotal</span><span id="boletaSubtotal"></span></div>
+      <div id="boletaFilaDescuento" class="justify-between text-inka-green" style="display:none;">
+        <span>Descuento</span><span id="boletaDescuento"></span>
+      </div>
+      <div class="flex justify-between text-gray-500"><span>IGV (18%)</span><span id="boletaIgv"></span></div>
+      <div class="flex justify-between font-extrabold text-gray-800"><span>Total</span><span id="boletaTotal"></span></div>
+    </div>
+    <p class="text-center text-xs text-gray-400 mt-4">¡Gracias por su compra!</p>
+    <div class="flex justify-center gap-2 mt-4 no-imprimir">
+      <button onclick="cerrarBoleta()" class="btn-inka-outline">Cerrar</button>
+      <button onclick="window.print()" class="btn-inka"><i class="fa-solid fa-print mr-1"></i> Imprimir</button>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/cajero_historial.js') }}"></script>
+{% endblock %}

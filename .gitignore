@@ -1,0 +1,21 @@
+# Entorno virtual
+.venv/
+venv/
+
+# Dependencias de Node (Tailwind CSS)
+node_modules/
+
+# Variables de entorno (contiene credenciales: BD y correo)
+.env
+
+# Python
+__pycache__/
+*.pyc
+
+# Base de datos local (SQLite, si no se usa PostgreSQL)
+*.db
+
+# Editor / SO
+.vscode/
+.idea/
+Thumbs.db

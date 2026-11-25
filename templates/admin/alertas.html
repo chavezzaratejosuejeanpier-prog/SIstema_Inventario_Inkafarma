@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block titulo %}Alertas - Inkafarma{% endblock %}
+{% block estilos %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/alertas.css') }}">
+{% endblock %}
+{% block contenido %}
+
+<div class="flex items-start justify-between mb-6 flex-wrap gap-3">
+  <div>
+    <h1 class="text-2xl font-extrabold text-gray-800">Alertas del sistema <span class="badge badge-yellow ml-2">Unidad 2 · Programación Lógica</span></h1>
+    <p class="text-sm text-gray-400">Calculadas con reglas Prolog (hechos, predicados, unificación y resolución) definidas en <code>paradigmas/reglas.pl</code></p>
+  </div>
+  <span id="motorBadge" class="badge badge-gray"><i class="fa-solid fa-circle-notch mr-1"></i> Calculando…</span>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+  <div class="card">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="font-bold text-inka-red"><i class="fa-solid fa-ban mr-1"></i> Lotes vencidos <span class="text-gray-400 font-normal">(requieren retiro)</span></h3>
+      <span id="countVencidos" class="badge badge-red">0</span>
+    </div>
+    <div id="vencidos" class="space-y-2 text-sm"></div>
+  </div>
+  <div class="card">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="font-bold text-gray-700"><i class="fa-solid fa-hourglass-half mr-1 text-inka-yellow"></i> Próximos a vencer <span class="text-gray-400 font-normal">(≤ 30 días)</span></h3>
+      <span id="countPorVencer" class="badge badge-yellow">0</span>
+    </div>
+    <div id="porVencer" class="space-y-2 text-sm"></div>
+  </div>
+  <div class="card">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="font-bold text-gray-700"><i class="fa-solid fa-box mr-1"></i> Medicamentos con stock bajo</h3>
+      <span id="countStockBajo" class="badge badge-gray">0</span>
+    </div>
+    <div id="stockBajo" class="space-y-2 text-sm"></div>
+  </div>
+  <div class="card">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="font-bold text-inka-red"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Alerta crítica <span class="text-gray-400 font-normal">(stock bajo + vencimiento cercano)</span></h3>
+      <span id="countCriticos" class="badge badge-red">0</span>
+    </div>
+    <div id="criticos" class="space-y-2 text-sm"></div>
+  </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/alertas.js') }}"></script>
+{% endblock %}

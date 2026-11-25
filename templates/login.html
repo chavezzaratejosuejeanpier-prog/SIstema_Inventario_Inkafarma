@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iniciar sesión - Inkafarma</title>
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='img/logo.png') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/tailwind.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+<body class="login-body login-premium">
+
+  <div class="login-grid">
+
+    
+    <section class="login-visual">
+      <div class="login-visual-overlay"></div>
+
+      <div class="login-brand">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Inkafarma" class="login-brand-logo">
+      </div>
+
+      <div class="login-visual-content">
+        <h1 class="login-heading">Tu inventario<br><span>bajo control.</span></h1>
+        <p class="login-subheading">
+          Gestiona medicamentos, lotes, compras y ventas desde un solo lugar,
+          con alertas inteligentes de stock y vencimiento.
+        </p>
+        <div class="login-benefits">
+          <span class="login-benefit"><i class="fa-solid fa-capsules"></i> Control de stock</span>
+          <span class="login-benefit"><i class="fa-solid fa-calendar-days"></i> Gestión de vencimientos</span>
+          <span class="login-benefit"><i class="fa-solid fa-chart-line"></i> Reportes y movimientos</span>
+        </div>
+      </div>
+    </section>
+
+    
+    <section class="login-panel">
+      <div class="login-mobile-brand">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Inkafarma">
+      </div>
+
+      <div class="login-form-wrap">
+        <div class="login-med-icon"><i class="fa-solid fa-pills"></i></div>
+        <h2 class="login-title">Bienvenido</h2>
+        <div class="login-accent"></div>
+        <p class="login-desc">Ingresa tus credenciales para acceder al sistema</p>
+
+        {% with mensajes = get_flashed_messages(with_categories=true) %}
+          {% if mensajes %}
+            {% for categoria, mensaje in mensajes %}
+              <div class="login-flash {{ 'login-flash-exito' if categoria == 'exito' else '' }}" role="alert">
+                <i class="fa-solid {{ 'fa-circle-check' if categoria == 'exito' else 'fa-circle-exclamation' }}"></i> {{ mensaje }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('auth.login') }}" class="login-form" id="login_form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="login-field">
+            <label for="login_email">Correo electrónico</label>
+            <div class="login-input-wrap">
+              <i class="fa-regular fa-envelope login-field-icon"></i>
+              <input type="email" id="login_email" name="email" required autocomplete="username"
+                     placeholder="Ingresa tu correo electrónico">
+            </div>
+          </div>
+          <div class="login-field">
+            <label for="login_password">Contraseña</label>
+            <div class="login-input-wrap">
+              <i class="fa-solid fa-lock login-field-icon"></i>
+              <input type="password" id="login_password" name="password" required autocomplete="current-password"
+                     placeholder="Ingresa tu contraseña">
+              <button type="button" class="login-eye" id="login_password_eye" aria-label="Mostrar contraseña">
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <div class="login-options">
+            <a href="{{ url_for('auth.olvide_password') }}" class="login-forgot">¿Olvidaste tu contraseña?</a>
+          </div>
+          <button type="submit" class="login-submit" id="login_submit">
+            <i class="fa-solid fa-right-to-bracket login-submit-icon"></i>
+            <span class="login-submit-label">Iniciar Sesión</span>
+            <span class="login-submit-loading"><span class="login-spinner"></span> Iniciando sesión...</span>
+          </button>
+        </form>
+
+        <p class="login-footer">¿Problemas para ingresar? Contacta al administrador del sistema.</p>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    (function () {
+      var password = document.getElementById('login_password');
+      var eye = document.getElementById('login_password_eye');
+
+      if (password && eye) {
+        eye.addEventListener('click', function () {
+          var mostrar = password.type === 'password';
+          password.type = mostrar ? 'text' : 'password';
+          eye.setAttribute('aria-label', mostrar ? 'Ocultar contraseña' : 'Mostrar contraseña');
+          eye.querySelector('i').className = mostrar ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
+        });
+      }
+
+      var form = document.getElementById('login_form');
+      var button = document.getElementById('login_submit');
+
+      if (form && button) {
+        form.addEventListener('submit', function () {
+          button.disabled = true;
+          button.classList.add('is-loading');
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

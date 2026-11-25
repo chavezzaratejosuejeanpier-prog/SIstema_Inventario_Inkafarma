@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+
+@theme {
+  --color-inka-green: #1c8b3c;
+  --color-inka-green-dark: #146b2d;
+  --color-inka-green-light: #e6f5ea;
+  --color-inka-red: #e2231a;
+  --color-inka-yellow: #ffd400;
+}

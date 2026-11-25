@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+{% block titulo %}Ventas - Inkafarma{% endblock %}
+{% block estilos %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/venta_pos.css') }}">
+{% endblock %}
+{% block contenido %}
+
+<div class="ven-hero">
+  <div class="ven-hero-izquierda">
+    <div class="ven-icono"><i class="fa-solid fa-cash-register"></i></div>
+    <div>
+      <h1 class="ven-titulo">Ventas</h1>
+      <p class="ven-subtitulo">Registra y gestiona las ventas de medicamentos</p>
+      <div class="ven-linea"></div>
+    </div>
+  </div>
+  <div class="ven-hero-derecha">
+    <div class="ven-indicador">
+      <span class="ven-indicador-icono"><i class="fa-solid fa-receipt"></i></span>
+      <div>
+        <p class="ven-indicador-label">Ventas de hoy</p>
+        <p class="ven-indicador-valor" id="ventasHoy">0</p>
+      </div>
+    </div>
+    <button type="button" onclick="abrirModal()" class="ven-btn-nuevo">
+      <i class="fa-solid fa-plus"></i> Nueva venta
+    </button>
+  </div>
+</div>
+
+<div class="ven-layout">
+
+  
+  <section class="ven-card ven-columna-izq">
+    <div class="ven-card-head">
+      <span class="ven-card-icono"><i class="fa-solid fa-capsules"></i></span>
+      <div>
+        <h2>Seleccionar medicamentos</h2>
+        <p>Busca un medicamento, selecciona la cantidad y agrégalo a la venta.</p>
+      </div>
+    </div>
+
+    <div class="ven-buscar">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input id="buscadorMedicamento" type="text" aria-label="Buscar medicamento"
+             placeholder="Buscar por nombre o código del medicamento..." oninput="renderResultados()">
+    </div>
+
+    <div id="resultadosMedicamentos" class="ven-resultados"></div>
+
+    <select id="item_medicamento" class="ven-select-oculto" tabindex="-1" aria-hidden="true"
+            onchange="alCambiarMedicamento()"></select>
+
+    <div id="productoSeleccionado" class="ven-producto hidden"></div>
+
+    <div class="ven-seccion-titulo">
+      <i class="fa-solid fa-basket-shopping"></i>
+      <h3 id="tituloItems">Productos seleccionados (0)</h3>
+    </div>
+
+    <div class="ven-tabla-scroll">
+      <table class="ven-tabla">
+        <thead>
+          <tr><th>Medicamento</th><th>Cantidad</th><th>Precio unitario</th><th>Subtotal</th><th></th></tr>
+        </thead>
+        <tbody id="items_tbody"></tbody>
+      </table>
+    </div>
+    <p id="items_vacio" class="ven-vacio">Aún no agregaste productos.</p>
+
+    <div class="ven-fefo">
+      <span class="ven-fefo-icono"><i class="fa-solid fa-layer-group"></i></span>
+      <div>
+        <h4>Descuento automático de stock (FEFO)</h4>
+        <p>El stock se descontará automáticamente aplicando el método FEFO (Primero en Vencer, Primero en Salir).</p>
+      </div>
+    </div>
+  </section>
+
+  
+  <aside class="ven-card ven-columna-der">
+    <div class="ven-card-head">
+      <span class="ven-card-icono"><i class="fa-solid fa-receipt"></i></span>
+      <div>
+        <h2>Resumen de venta</h2>
+        <p>Verifica los datos y confirma la venta.</p>
+      </div>
+    </div>
+
+    <div class="ven-campo">
+      <label for="f_cliente">Cliente (opcional)</label>
+      <div class="ven-input-wrap">
+        <i class="fa-regular fa-user"></i>
+        <input id="f_cliente" placeholder="Cliente general">
+      </div>
+    </div>
+
+    <div class="ven-campo">
+      <label for="f_metodo">Método de pago</label>
+      <div class="ven-input-wrap">
+        <i class="fa-solid fa-credit-card"></i>
+        <select id="f_metodo" onchange="alCambiarMetodoPago()">
+          <option>Efectivo</option><option>Tarjeta</option><option>Yape/Plin</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="campoTarjeta" class="hidden ven-campos-extra">
+      <div class="ven-campo">
+        <label for="f_tarjeta_digitos">N° de tarjeta <span class="ven-ayuda">(últimos 4 dígitos)</span></label>
+        <div class="ven-input-wrap">
+          <i class="fa-regular fa-credit-card"></i>
+          <input id="f_tarjeta_digitos" maxlength="4" inputmode="numeric" placeholder="Ej. 4321">
+        </div>
+      </div>
+      <div class="ven-campo">
+        <label for="f_tarjeta_titular">Titular de la tarjeta</label>
+        <div class="ven-input-wrap">
+          <i class="fa-regular fa-user"></i>
+          <input id="f_tarjeta_titular" placeholder="Nombre en la tarjeta">
+        </div>
+      </div>
+    </div>
+
+    <div id="campoYapePlin" class="hidden ven-campos-extra">
+      <div class="ven-campo">
+        <label for="f_operacion">N° de operación</label>
+        <div class="ven-input-wrap">
+          <i class="fa-solid fa-mobile-screen"></i>
+          <input id="f_operacion" placeholder="Ej. 000123456">
+        </div>
+      </div>
+    </div>
+
+    <div class="ven-campo">
+      <label for="f_cliente_email">Correo del cliente <span class="ven-ayuda">(opcional, boleta)</span></label>
+      <div class="ven-input-wrap">
+        <i class="fa-regular fa-envelope"></i>
+        <input id="f_cliente_email" type="email" placeholder="cliente@correo.com">
+      </div>
+    </div>
+
+    <div class="ven-campo">
+      <label for="f_cupon">Código de cupón <span class="ven-ayuda">(opcional)</span></label>
+      <div class="ven-input-wrap">
+        <i class="fa-solid fa-tag"></i>
+        <input id="f_cupon" class="ven-mayusculas" placeholder="Ej. SALUD10">
+      </div>
+    </div>
+
+    <div class="ven-totales">
+      <div class="ven-total-fila"><span>Subtotal</span><span id="subtotalVenta">S/ 0.00</span></div>
+      <div id="filaDescuentoVenta" class="ven-total-fila ven-descuento" style="display:none;">
+        <span><i class="fa-solid fa-tag"></i> Descuento</span><span id="descuentoVenta">- S/ 0.00</span>
+      </div>
+      <div class="ven-total-fila"><span>IGV (18%)</span><span id="igvVenta">S/ 0.00</span></div>
+      <div class="ven-total-final"><span>Total a pagar</span><span id="totalVenta">S/ 0.00</span></div>
+    </div>
+
+    <p class="ven-boleta-nota"><i class="fa-solid fa-circle-info"></i> La boleta se genera automáticamente al registrar la venta.</p>
+
+    <button type="button" onclick="guardarVenta()" class="ven-btn-registrar">
+      <i class="fa-solid fa-receipt"></i> Registrar venta
+    </button>
+    <button type="button" onclick="cerrarModal()" class="ven-btn-limpiar">
+      <i class="fa-solid fa-rotate-left"></i> Limpiar venta
+    </button>
+  </aside>
+
+</div>
+
+
+<div id="modalBoleta" class="modal-overlay hidden">
+  <div class="card w-full max-w-sm" id="boleta">
+    <div class="text-center mb-4">
+      <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Inkafarma" class="h-7 mx-auto mb-2">
+      <p class="font-extrabold text-gray-800 text-sm">Boleta de venta electrónica</p>
+      <p class="text-xs text-gray-400 font-mono" id="boletaNumero"></p>
+    </div>
+    <div class="text-xs text-gray-500 space-y-0.5 mb-3">
+      <p class="flex justify-between"><span>Cliente</span><span id="boletaCliente" class="text-gray-700 font-medium"></span></p>
+      <p class="flex justify-between"><span>Fecha</span><span id="boletaFecha" class="text-gray-700"></span></p>
+      <p class="flex justify-between"><span>Vendedor</span><span id="boletaVendedor" class="text-gray-700"></span></p>
+      <p class="flex justify-between"><span>Pago</span><span id="boletaMetodo" class="text-gray-700"></span></p>
+      <p class="flex justify-between hidden" id="boletaFilaReferencia"><span>Referencia</span><span id="boletaReferencia" class="text-gray-700"></span></p>
+      <p class="flex justify-between hidden" id="boletaFilaCupon"><span>Cupón</span><span id="boletaCupon" class="text-inka-green font-medium"></span></p>
+    </div>
+    <table class="w-full text-xs border-t border-dashed border-gray-200 pt-2">
+      <thead>
+        <tr class="text-gray-400 text-left"><th class="py-1 font-medium">Producto</th><th class="font-medium">Cant.</th><th class="text-right font-medium">Subtotal</th></tr>
+      </thead>
+      <tbody id="boletaItems"></tbody>
+    </table>
+    <div class="border-t border-dashed border-gray-200 pt-2 mt-2 text-sm space-y-1">
+      <div class="flex justify-between text-gray-500"><span>Subtotal</span><span id="boletaSubtotal"></span></div>
+      <div id="boletaFilaDescuento" class="justify-between text-inka-green" style="display:none;">
+        <span id="boletaEtiquetaDescuento">Descuento</span><span id="boletaDescuento"></span>
+      </div>
+      <div class="flex justify-between text-gray-500"><span>IGV (18%)</span><span id="boletaIgv"></span></div>
+      <div class="flex justify-between font-extrabold text-gray-800"><span>Total</span><span id="boletaTotal"></span></div>
+    </div>
+    <p class="text-center text-xs text-gray-400 mt-4">¡Gracias por su compra!</p>
+    <div class="flex justify-center gap-2 mt-4 no-imprimir">
+      <button onclick="cerrarBoleta()" class="btn-inka-outline">Cerrar</button>
+      <button onclick="window.print()" class="btn-inka"><i class="fa-solid fa-print mr-1"></i> Imprimir</button>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/cajero_ventas.js') }}"></script>
+{% endblock %}

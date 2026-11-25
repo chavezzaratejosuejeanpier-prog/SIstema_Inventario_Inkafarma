@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block titulo %}Lotes y Stock - Inkafarma{% endblock %}
+{% block estilos %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/lotes.css') }}">
+{% endblock %}
+{% block contenido %}
+
+<div class="lot-hero">
+  <div class="lot-hero-izq">
+    <div class="lot-icono"><i class="fa-solid fa-boxes-stacked"></i></div>
+    <div>
+      <h1 class="lot-titulo">Lotes y Stock</h1>
+      <p class="lot-subtitulo">Control de lotes, fechas de vencimiento y stock por sucursal</p>
+      <div class="lot-linea"></div>
+    </div>
+  </div>
+  <button type="button" onclick="abrirModal()" class="lot-btn-nuevo">
+    <i class="fa-solid fa-plus"></i> Nuevo lote
+  </button>
+</div>
+
+<div class="lot-kpis">
+  <div class="lot-kpi vigentes">
+    <div class="lot-kpi-top">
+      <span class="lot-kpi-icono"><i class="fa-solid fa-box"></i></span>
+      <span class="lot-kpi-numero cargando" id="kpiVigentes">—</span>
+    </div>
+    <p class="lot-kpi-titulo">Lotes vigentes</p>
+    <p class="lot-kpi-desc">Con stock disponible y dentro de la fecha</p>
+  </div>
+  <div class="lot-kpi por-vencer">
+    <div class="lot-kpi-top">
+      <span class="lot-kpi-icono"><i class="fa-regular fa-calendar-days"></i></span>
+      <span class="lot-kpi-numero cargando" id="kpiPorVencer">—</span>
+    </div>
+    <p class="lot-kpi-titulo">Próximos a vencer</p>
+    <p class="lot-kpi-desc">Vencen en los próximos 30 días</p>
+  </div>
+  <div class="lot-kpi vencidos">
+    <div class="lot-kpi-top">
+      <span class="lot-kpi-icono"><i class="fa-solid fa-triangle-exclamation"></i></span>
+      <span class="lot-kpi-numero cargando" id="kVencidos">—</span>
+    </div>
+    <p class="lot-kpi-titulo">Lotes vencidos</p>
+    <p class="lot-kpi-desc">Con fecha de vencimiento vencida</p>
+  </div>
+</div>
+
+<div class="lot-filtros">
+  <div class="lot-buscar">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input id="buscador" type="text" aria-label="Buscar lotes"
+           placeholder="Buscar por medicamento o número de lote..." oninput="paginaActual = 1; renderTabla()">
+  </div>
+  <div class="lot-filtro">
+    <label for="filtroSucursal">Sucursal</label>
+    <select id="filtroSucursal" aria-label="Filtrar por sucursal" onchange="paginaActual = 1; renderTabla()">
+      <option value="">Todas las sucursales</option>
+    </select>
+  </div>
+  <div class="lot-filtro">
+    <label for="filtroVencimiento">Vencimiento</label>
+    <select id="filtroVencimiento" aria-label="Filtrar por vencimiento" onchange="paginaActual = 1; renderTabla()">
+      <option value="">Todos los vencimientos</option>
+      <option value="vigentes">Vigentes</option>
+      <option value="proximos">Próximos a vencer</option>
+      <option value="vencidos">Vencidos</option>
+    </select>
+  </div>
+</div>
+
+<div class="lot-tabla-card">
+  <div class="lot-tabla-scroll">
+    <table class="lot-tabla">
+      <thead><tr><th>Medicamento</th><th>N.º Lote</th><th>Sucursal</th><th>Vencimiento</th><th>Estado (FEFO)</th><th>Cant. inicial</th><th>Cant. actual</th><th>Precio compra</th><th>Acciones</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <div class="lot-fefo">
+    <span class="lot-fefo-icono"><i class="fa-solid fa-circle-info"></i></span>
+    <p><strong>Método FEFO:</strong> se prioriza la salida de los lotes con fecha de vencimiento más cercana.</p>
+  </div>
+  <div class="lot-pie">
+    <span id="lotMostrando">Mostrando 0 de 0 registros</span>
+    <div id="paginacion" class="lot-pag-controles"></div>
+  </div>
+</div>
+
+<div id="modal" class="modal-overlay hidden">
+  <div class="card w-full max-w-lg">
+    <h3 class="font-bold text-lg text-gray-800 mb-4" id="modalTitulo">Nuevo lote</h3>
+    <form id="form" class="grid grid-cols-2 gap-3" onsubmit="guardar(event)">
+      <input type="hidden" id="f_id">
+      <div class="col-span-2"><label class="text-xs font-semibold text-gray-500">Medicamento</label>
+        <select id="f_medicamento" required class="w-full mt-1 px-3 py-2 border rounded-lg text-sm"></select></div>
+      <div class="col-span-2"><label class="text-xs font-semibold text-gray-500">Sucursal</label>
+        <select id="f_sucursal" required class="w-full mt-1 px-3 py-2 border rounded-lg text-sm"></select></div>
+      <div class="col-span-1"><label class="text-xs font-semibold text-gray-500">N° de lote</label>
+        <input id="f_numero" required class="w-full mt-1 px-3 py-2 border rounded-lg text-sm"></div>
+      <div class="col-span-1"><label class="text-xs font-semibold text-gray-500">Fecha de vencimiento</label>
+        <input id="f_vencimiento" type="date" required class="w-full mt-1 px-3 py-2 border rounded-lg text-sm"></div>
+      <div class="col-span-1"><label class="text-xs font-semibold text-gray-500" id="labelCantidad">Cantidad inicial</label>
+        <input id="f_cantidad" type="number" required class="w-full mt-1 px-3 py-2 border rounded-lg text-sm"></div>
+      <div class="col-span-1"><label class="text-xs font-semibold text-gray-500">Precio de compra unitario</label>
+        <input id="f_precio" type="number" step="0.01" required class="w-full mt-1 px-3 py-2 border rounded-lg text-sm"></div>
+      <div class="col-span-2 flex justify-end gap-2 mt-3">
+        <button type="button" onclick="cerrarModal()" class="btn-inka-outline">Cancelar</button>
+        <button type="submit" class="btn-inka">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/lotes.js') }}"></script>
+{% endblock %}

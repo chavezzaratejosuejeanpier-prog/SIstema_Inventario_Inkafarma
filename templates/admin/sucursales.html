@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block titulo %}Sucursales - Inkafarma{% endblock %}
+{% block estilos %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sucursales.css') }}">
+{% endblock %}
+{% block contenido %}
+
+<div class="suc-hero">
+  <div class="suc-hero-izq">
+    <div class="suc-icono"><i class="fa-solid fa-shop"></i></div>
+    <div>
+      <h1 class="suc-titulo">Sucursales</h1>
+      <p class="suc-subtitulo">Gestión de locales y puntos de venta de Inkarfarma</p>
+      <div class="suc-linea"></div>
+    </div>
+  </div>
+  <button type="button" onclick="abrirModal()" class="suc-btn-nuevo">
+    <i class="fa-solid fa-plus"></i> Crear sucursal
+  </button>
+</div>
+
+<div class="suc-buscar-card">
+  <div class="suc-buscar">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input id="buscador" type="text" aria-label="Buscar sucursales"
+           placeholder="Buscar por nombre o dirección..." oninput="paginaActual = 1; renderTabla()">
+  </div>
+</div>
+
+<div class="suc-tabla-card">
+  <div class="suc-tabla-scroll">
+    <table class="suc-tabla">
+      <thead><tr><th>Nombre</th><th>Dirección</th><th>Teléfono</th><th>Estado</th><th>Acciones</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <div class="suc-pie">
+    <span id="sucMostrando">Mostrando 0 de 0 registros</span>
+    <div id="paginacion" class="suc-pag-controles"></div>
+  </div>
+</div>
+
+<div id="modal" class="modal-overlay hidden">
+  <div class="card w-full max-w-xl">
+    <div class="flex items-center gap-3 mb-5">
+      <div class="modal-icon-badge"><i class="fa-solid fa-shop"></i></div>
+      <div>
+        <h3 class="font-bold text-lg text-gray-800" id="modalTitulo">Nueva sucursal</h3>
+        <p class="text-xs text-gray-400">Registra un local Inkafarma y su ubicación exacta</p>
+      </div>
+    </div>
+    <form id="form" class="grid grid-cols-2 gap-3" onsubmit="guardar(event)">
+      <input type="hidden" id="f_id">
+      <div class="col-span-2">
+        <label class="text-xs font-semibold text-gray-500">Nombre</label>
+        <div class="relative">
+          <i class="fa-solid fa-store absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+          <input id="f_nombre" required placeholder="Ej. Sucursal Miraflores" class="w-full mt-1 pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-inka-green">
+        </div>
+      </div>
+      <div class="col-span-2">
+        <label class="text-xs font-semibold text-gray-500">Dirección</label>
+        <div class="relative">
+          <i class="fa-solid fa-location-dot absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+          <input id="f_direccion" class="w-full mt-1 pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-inka-green">
+        </div>
+      </div>
+      <div class="col-span-2">
+        <label class="text-xs font-semibold text-gray-500">Teléfono</label>
+        <div class="relative">
+          <i class="fa-solid fa-phone absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+          <input id="f_telefono" class="w-full mt-1 pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-inka-green">
+        </div>
+      </div>
+
+      <div class="col-span-2 mapa-box">
+        <div class="flex items-center justify-between mb-2">
+          <label class="text-xs font-semibold text-gray-500"><i class="fa-solid fa-map-location-dot text-inka-green mr-1"></i>Ubicar en el mapa</label>
+          <span id="badgeUbicacion" class="badge badge-gray"><i class="fa-solid fa-circle-question mr-1"></i>Sin ubicar</span>
+        </div>
+        <div class="flex gap-2">
+          <div class="relative flex-1">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+            <input id="f_buscar_mapa" placeholder="Ej. Miraflores, Lima" class="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-inka-green">
+          </div>
+          <button type="button" onclick="buscarInkafarmaEnMapa()" class="btn-inka px-4"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+        <p class="text-[11px] text-gray-400 mt-1.5 mb-2">Busca la ciudad o zona: si aparece el local de Inkafarma, haz clic en él. Si no aparece (frecuente fuera de Lima), acércate en el mapa y haz clic exactamente sobre el local para ubicarlo manualmente.</p>
+        <div id="mapaSucursal" class="w-full h-56 rounded-lg border border-gray-200"></div>
+        <input type="hidden" id="f_latitud">
+        <input type="hidden" id="f_longitud">
+      </div>
+
+      <div class="col-span-2 flex justify-end gap-2 mt-3">
+        <button type="button" onclick="cerrarModal()" class="btn-inka-outline">Cancelar</button>
+        <button type="submit" class="btn-inka"><i class="fa-solid fa-check mr-1"></i>Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script src="{{ url_for('static', filename='js/sucursales.js') }}"></script>
+{% endblock %}

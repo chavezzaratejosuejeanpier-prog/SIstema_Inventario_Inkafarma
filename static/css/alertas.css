@@ -1,0 +1,17 @@
+
+
+
+@keyframes latido {
+  0%, 100% { box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  50% { box-shadow: 0 0 0 3px rgba(226, 35, 26, 0.15); }
+}
+.card:has(#criticos) {
+  animation: latido 2.5s ease-in-out infinite;
+}
+
+#vencidos div:last-child,
+#porVencer div:last-child,
+#stockBajo div:last-child,
+#criticos div:last-child {
+  border-bottom: none !important;
+}

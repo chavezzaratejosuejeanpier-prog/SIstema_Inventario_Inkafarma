@@ -1,0 +1,195 @@
+
+
+.ven-admin-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+  animation: ven-admin-aparecer 0.35s ease-out both;
+}
+
+.ven-admin-hero-izq {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-width: 0;
+}
+
+.ven-admin-icono {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: 16px;
+  background: #DCFCE7;
+  color: #087E49;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+.ven-admin-titulo {
+  margin: 0;
+  color: #0B1731;
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.ven-admin-subtitulo {
+  margin: 4px 0 0;
+  color: #64748B;
+  font-size: 16px;
+}
+
+.ven-admin-linea {
+  width: 70px;
+  height: 4px;
+  margin-top: 10px;
+  border-radius: 9999px;
+  background: #00A83B;
+}
+
+.ven-admin-hero-der {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ven-admin-indicador {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  background: #FFFFFF;
+  border: 1px solid #E8EEF3;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.ven-admin-indicador-icono {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: #DCFCE7;
+  color: #00A83B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.ven-admin-indicador-label {
+  margin: 0;
+  color: #64748B;
+  font-size: 12px;
+}
+
+.ven-admin-indicador-valor {
+  margin: 2px 0 0;
+  color: #0B1731;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.ven-admin-exportes { display: flex; gap: 8px; }
+
+.ven-admin-export {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #E5EBF1;
+  border-radius: 12px;
+  background: #FFFFFF;
+  color: #64748B;
+  font-size: 15px;
+  text-decoration: none;
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.ven-admin-export:hover {
+  color: #087E49;
+  border-color: #00A83B;
+  background: #F5FBF7;
+}
+
+.ven-admin-card {
+  padding: 20px;
+  background: #FFFFFF;
+  border: 1px solid #E8EEF3;
+  border-radius: 18px;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+  animation: ven-admin-aparecer 0.35s ease-out both;
+}
+
+.ven-admin-card > input {
+  width: 100%;
+  height: 48px;
+  margin-bottom: 18px;
+  padding: 0 16px;
+  border: 1px solid #D8E0EA;
+  border-radius: 12px;
+  background: #FFFFFF;
+  color: #0B1731;
+  font-size: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ven-admin-card > input::placeholder { color: #94A3B8; }
+
+.ven-admin-card > input:focus {
+  outline: none;
+  border-color: #00A83B;
+  box-shadow: 0 0 0 3px rgba(0, 168, 59, 0.12);
+}
+
+.ven-admin-tabla { width: 100%; min-width: 900px; border-collapse: collapse; }
+
+.ven-admin-tabla thead th {
+  height: 44px;
+  padding: 0 14px;
+  background: #EAF7EE;
+  color: #075C2B;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.ven-admin-tabla thead th:first-child { border-radius: 12px 0 0 12px; }
+.ven-admin-tabla thead th:last-child { border-radius: 0 12px 12px 0; }
+
+.ven-admin-tabla tbody td {
+  padding: 11px 14px;
+  border-bottom: 1px solid #F1F5F9;
+  color: #0B1731;
+  font-size: 13px;
+}
+
+.ven-admin-tabla tbody tr:hover td { background: #F5FBF7; }
+
+@keyframes ven-admin-aparecer {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 640px) {
+  .ven-admin-titulo { font-size: 30px; }
+  .ven-admin-icono { width: 54px; height: 54px; font-size: 24px; }
+  .ven-admin-hero-der { width: 100%; }
+  .ven-admin-card { padding: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ven-admin-hero, .ven-admin-card { animation: none; }
+  .ven-admin-export, .ven-admin-card > input { transition: none; }
+}

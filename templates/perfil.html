@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block titulo %}Mi perfil - Inkafarma{% endblock %}
+{% block estilos %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/perfil.css') }}">
+{% endblock %}
+{% block contenido %}
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-extrabold text-gray-800">Mi perfil</h1>
+    <p class="text-sm text-gray-400">Datos de tu cuenta y seguridad</p>
+  </div>
+</div>
+
+
+<div class="perfil-banner mb-6">
+  <div class="perfil-avatar">{{ usuario_nombre[0] if usuario_nombre else '?' }}</div>
+  <div class="flex-1 min-w-0">
+    <p class="text-lg font-extrabold truncate">{{ usuario_nombre }}</p>
+    <p class="text-sm text-white/80" id="perfilEmail">Cargando...</p>
+  </div>
+  <div class="flex flex-col items-end gap-1.5">
+    <span class="perfil-banner-badge"><i class="fa-solid fa-shield"></i> {{ usuario_rol }}</span>
+    <span class="text-xs text-white/70" id="perfilMiembroDesde"></span>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+  <div class="card">
+    <h3 class="font-bold text-gray-700 mb-1"><i class="fa-solid fa-circle-info text-inka-green mr-1"></i> Información de la cuenta</h3>
+    <p class="text-xs text-gray-400 mb-4">Estos datos los administra tu Administrador del sistema.</p>
+    <div class="space-y-4 text-sm">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-inka-green-light flex items-center justify-center text-inka-green shrink-0">
+          <i class="fa-solid fa-user"></i>
+        </div>
+        <div class="min-w-0">
+          <p class="text-xs text-gray-400">Nombre completo</p>
+          <p class="text-gray-700 font-medium truncate">{{ usuario_nombre }}</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-inka-green-light flex items-center justify-center text-inka-green shrink-0">
+          <i class="fa-regular fa-envelope"></i>
+        </div>
+        <div class="min-w-0">
+          <p class="text-xs text-gray-400">Correo electrónico</p>
+          <p class="text-gray-700 font-medium truncate" id="infoEmail">-</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-inka-green-light flex items-center justify-center text-inka-green shrink-0">
+          <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <div class="min-w-0">
+          <p class="text-xs text-gray-400">Rol</p>
+          <span class="badge {{ 'badge-rol-administrador' if usuario_rol == 'Administrador' else 'badge-rol-cajero' }}">{{ usuario_rol }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 class="font-bold text-gray-700 mb-1"><i class="fa-solid fa-key text-inka-green mr-1"></i> Cambiar contraseña</h3>
+    <p class="text-xs text-gray-400 mb-4">Confirma tu contraseña actual para poder establecer una nueva.</p>
+    <form id="form" class="space-y-4" onsubmit="cambiarPassword(event)" novalidate>
+      <div>
+        <label class="text-xs font-semibold text-gray-500">Contraseña actual</label>
+        <div class="input-con-icono mt-1" id="wrapActual">
+          <i class="fa-solid fa-lock icono-izq"></i>
+          <input id="f_actual" type="password" autocomplete="current-password" required>
+          <button type="button" class="toggle-clave" onclick="alternarVisibilidad('f_actual', this)"><i class="fa-solid fa-eye"></i></button>
+        </div>
+        <p class="mensaje-error-campo" id="errorActual"></p>
+      </div>
+
+      <div>
+        <label class="text-xs font-semibold text-gray-500">Nueva contraseña</label>
+        <div class="input-con-icono mt-1" id="wrapNueva">
+          <i class="fa-solid fa-lock icono-izq"></i>
+          <input id="f_nueva" type="password" autocomplete="new-password" required>
+          <button type="button" class="toggle-clave" onclick="alternarVisibilidad('f_nueva', this)"><i class="fa-solid fa-eye"></i></button>
+        </div>
+        <p class="mensaje-error-campo" id="errorNueva"></p>
+        <div class="flex flex-col gap-1 mt-2">
+          <span class="requisito" id="reqLongitud"><i class="fa-solid fa-circle"></i> Al menos 6 caracteres</span>
+          <span class="requisito" id="reqDistinta"><i class="fa-solid fa-circle"></i> Diferente de la contraseña actual</span>
+        </div>
+      </div>
+
+      <div>
+        <label class="text-xs font-semibold text-gray-500">Confirmar nueva contraseña</label>
+        <div class="input-con-icono mt-1" id="wrapConfirmar">
+          <i class="fa-solid fa-lock icono-izq"></i>
+          <input id="f_confirmar" type="password" autocomplete="new-password" required>
+          <button type="button" class="toggle-clave" onclick="alternarVisibilidad('f_confirmar', this)"><i class="fa-solid fa-eye"></i></button>
+        </div>
+        <p class="mensaje-error-campo" id="errorConfirmar"></p>
+        <span class="requisito mt-2" id="reqCoincide"><i class="fa-solid fa-circle"></i> Las contraseñas coinciden</span>
+      </div>
+
+      <div class="flex justify-end mt-3">
+        <button type="submit" id="btnGuardar" class="btn-inka" disabled><i class="fa-solid fa-check mr-1"></i> Actualizar contraseña</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/perfil.js') }}"></script>
+{% endblock %}

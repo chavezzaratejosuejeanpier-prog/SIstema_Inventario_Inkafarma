@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block titulo %}Usuarios - Inkafarma{% endblock %}
+{% block estilos %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/usuarios.css') }}">
+{% endblock %}
+{% block contenido %}
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-extrabold text-gray-800">Usuarios y Roles</h1>
+    <p class="text-sm text-gray-400">Gestión de accesos al sistema</p>
+  </div>
+  <button onclick="abrirModal()" class="btn-inka"><i class="fa-solid fa-plus mr-1"></i> Nuevo usuario</button>
+</div>
+
+<div class="card">
+  <div class="relative mb-4">
+    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+    <input id="buscador" type="text" placeholder="Buscar por nombre o email..."
+           class="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-inka-green"
+           oninput="paginaActual = 1; renderTabla()">
+  </div>
+  <div class="overflow-x-auto">
+    <table class="tabla-inka w-full">
+      <thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Sucursal</th><th>Estado</th><th>Acciones</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <div id="paginacion"></div>
+</div>
+
+<div id="modal" class="modal-overlay hidden">
+  <div class="card w-full max-w-md">
+    <div class="flex items-center gap-3 mb-5">
+      <div class="modal-icon-badge"><i class="fa-solid fa-user-gear"></i></div>
+      <div>
+        <h3 class="font-bold text-lg text-gray-800" id="modalTitulo">Nuevo usuario</h3>
+        <p class="text-xs text-gray-400">Da acceso al sistema y asigna su rol</p>
+      </div>
+    </div>
+    <form id="form" class="space-y-3" onsubmit="guardar(event)">
+      <input type="hidden" id="f_id">
+      <div>
+        <label class="text-xs font-semibold text-gray-500">Nombre completo</label>
+        <div class="relative">
+          <i class="fa-solid fa-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+          <input id="f_nombre" required placeholder="Ej. Roberto Cajero" class="w-full mt-1 pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-inka-green">
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-gray-500">Email</label>
+        <div class="relative">
+          <i class="fa-solid fa-envelope absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+          <input id="f_email" type="email" required class="w-full mt-1 pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-inka-green">
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-gray-500">Rol</label>
+        <div class="relative">
+          <i class="fa-solid fa-user-tag absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+          <select id="f_rol" required class="w-full mt-1 pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-inka-green appearance-none" onchange="alCambiarRol()"></select>
+          <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
+        </div>
+      </div>
+      <div id="campoSucursal">
+        <label class="text-xs font-semibold text-gray-500">Sucursal</label>
+        <div class="relative">
+          <i class="fa-solid fa-shop absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+          <select id="f_sucursal" class="w-full mt-1 pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-inka-green appearance-none">
+            <option value="">Sin asignar (ve todas las sucursales)</option>
+          </select>
+          <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-gray-500" id="labelPassword">Contraseña</label>
+        <div class="relative">
+          <i class="fa-solid fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+          <input id="f_password" type="password" class="w-full mt-1 pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-inka-green">
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 mt-3">
+        <button type="button" onclick="cerrarModal()" class="btn-inka-outline">Cancelar</button>
+        <button type="submit" class="btn-inka"><i class="fa-solid fa-check mr-1"></i>Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/usuarios.js') }}"></script>
+{% endblock %}

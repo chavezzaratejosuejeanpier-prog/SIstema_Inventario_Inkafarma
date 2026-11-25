@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block titulo %}Compras - Inkafarma{% endblock %}
+{% block estilos %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/compras.css') }}">
+{% endblock %}
+{% block contenido %}
+
+<div class="com-hero">
+  <div class="com-hero-izq">
+    <div class="com-icono"><i class="fa-solid fa-cart-shopping"></i></div>
+    <div>
+      <h1 class="com-titulo">Compras</h1>
+      <p class="com-subtitulo">Órdenes de compra a laboratorios (ingreso de stock)</p>
+      <div class="com-linea"></div>
+    </div>
+  </div>
+  <button type="button" onclick="abrirModal()" class="com-btn-nuevo">
+    <i class="fa-solid fa-plus"></i> Nueva compra
+  </button>
+</div>
+
+<div class="com-kpis">
+  <div class="com-kpi">
+    <div class="com-kpi-top">
+      <span class="com-kpi-icono verde"><i class="fa-solid fa-file-invoice"></i></span>
+      <span class="com-kpi-valor" id="comKpiOrdenes">—</span>
+    </div>
+    <p class="com-kpi-titulo">Compras del período</p>
+    <p class="com-kpi-desc">Órdenes según los filtros aplicados</p>
+  </div>
+  <div class="com-kpi">
+    <div class="com-kpi-top">
+      <span class="com-kpi-icono verde"><i class="fa-solid fa-coins"></i></span>
+      <span class="com-kpi-valor" id="comKpiMonto">—</span>
+    </div>
+    <p class="com-kpi-titulo">Monto total invertido</p>
+    <p class="com-kpi-desc">Total de las órdenes vigentes</p>
+  </div>
+  <div class="com-kpi">
+    <div class="com-kpi-top">
+      <span class="com-kpi-icono ambar"><i class="fa-regular fa-clipboard"></i></span>
+      <span class="com-kpi-valor" id="comKpiPendientes">—</span>
+    </div>
+    <p class="com-kpi-titulo">Órdenes pendientes</p>
+    <p class="com-kpi-desc">Órdenes aún no completadas</p>
+  </div>
+</div>
+
+<div class="com-filtros">
+  <div class="com-buscar">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input id="buscador" type="text" aria-label="Buscar compras"
+           placeholder="Buscar por N° de orden o laboratorio..." oninput="paginaActual = 1; renderTabla()">
+  </div>
+  <div class="com-filtro">
+    <label for="filtroEstado">Estado</label>
+    <select id="filtroEstado" aria-label="Filtrar por estado" onchange="paginaActual = 1; renderTabla()">
+      <option value="">Todos los estados</option>
+      <option value="Completada">Completada</option>
+      <option value="Anulada">Anulada</option>
+    </select>
+  </div>
+  <div class="com-filtro">
+    <label for="filtroSucursal">Sucursal</label>
+    <select id="filtroSucursal" aria-label="Filtrar por sucursal" onchange="paginaActual = 1; renderTabla()">
+      <option value="">Todas las sucursales</option>
+    </select>
+  </div>
+  <div class="com-filtro com-rango">
+    <label>Rango de fechas</label>
+    <div class="com-rango-inputs">
+      <input type="date" id="fechaDesde" aria-label="Fecha desde" onchange="paginaActual = 1; renderTabla()">
+      <input type="date" id="fechaHasta" aria-label="Fecha hasta" onchange="paginaActual = 1; renderTabla()">
+    </div>
+  </div>
+  <button type="button" class="com-btn-limpiar" onclick="limpiarFiltros()">
+    <i class="fa-solid fa-rotate-left"></i> Limpiar filtros
+  </button>
+</div>
+
+<div class="com-tabla-card">
+  <div class="com-tabla-scroll">
+    <table class="com-tabla">
+      <thead><tr><th>N.º Orden</th><th>Laboratorio</th><th>Sucursal</th><th>Registrado por</th><th>Fecha</th><th>Total</th><th>Ítems</th><th>Estado</th><th>Acciones</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <div class="com-pie">
+    <span id="comMostrando">Mostrando 0 de 0 registros</span>
+    <div id="paginacion" class="com-pag-controles"></div>
+  </div>
+</div>
+
+<div id="modal" class="modal-overlay hidden">
+  <div class="card w-full max-w-2xl">
+    <h3 class="font-bold text-lg text-gray-800 mb-4">Nueva orden de compra</h3>
+    <div class="grid grid-cols-2 gap-3 mb-3">
+      <div>
+        <label class="text-xs font-semibold text-gray-500">Laboratorio</label>
+        <select id="f_laboratorio" class="w-full mt-1 px-3 py-2 border rounded-lg text-sm"></select>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-gray-500">Sucursal destino</label>
+        <select id="f_sucursal" class="w-full mt-1 px-3 py-2 border rounded-lg text-sm"></select>
+      </div>
+    </div>
+
+    <div class="border border-gray-100 rounded-lg p-3 mb-3">
+      <div class="grid grid-cols-12 gap-2 mb-2">
+        <select id="item_medicamento" class="col-span-4 px-2 py-2 border rounded-lg text-sm"></select>
+        <input id="item_lote" placeholder="N° lote" class="col-span-2 px-2 py-2 border rounded-lg text-sm">
+        <input id="item_vencimiento" type="date" class="col-span-2 px-2 py-2 border rounded-lg text-sm">
+        <input id="item_cantidad" type="number" placeholder="Cant." class="col-span-1 px-2 py-2 border rounded-lg text-sm">
+        <input id="item_precio" type="number" step="0.01" placeholder="P.Unit" class="col-span-2 px-2 py-2 border rounded-lg text-sm">
+        <button onclick="agregarItem()" class="col-span-1 btn-inka"><i class="fa-solid fa-plus"></i></button>
+      </div>
+      <table class="w-full text-sm">
+        <tbody id="items_tbody"></tbody>
+      </table>
+      <p class="text-right font-bold text-gray-700 mt-2">Total: <span id="totalCompra">S/ 0.00</span></p>
+    </div>
+
+    <div class="flex justify-end gap-2">
+      <button type="button" onclick="cerrarModal()" class="btn-inka-outline">Cancelar</button>
+      <button onclick="guardarCompra()" class="btn-inka">Registrar compra</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/compras.js') }}"></script>
+{% endblock %}

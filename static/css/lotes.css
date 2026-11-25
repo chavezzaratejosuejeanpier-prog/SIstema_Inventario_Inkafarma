@@ -1,0 +1,473 @@
+
+
+#modal .grid > div { min-width: 0; }
+
+.lot-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+  animation: lot-aparecer 0.35s ease-out both;
+}
+
+.lot-hero-izq {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-width: 0;
+}
+
+.lot-icono {
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+  border-radius: 18px;
+  background: #DCFCE7;
+  color: #08752E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+}
+
+.lot-titulo {
+  margin: 0;
+  color: #0B1731;
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.lot-subtitulo {
+  margin: 5px 0 0;
+  color: #64748B;
+  font-size: 16px;
+}
+
+.lot-linea {
+  width: 100px;
+  height: 5px;
+  margin-top: 10px;
+  border-radius: 9999px;
+  background: #00A83B;
+}
+
+.lot-btn-nuevo {
+  height: 50px;
+  padding: 0 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 12px;
+  background: #008F32;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(0, 143, 50, 0.20);
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.lot-btn-nuevo:hover {
+  background: #00752A;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(0, 117, 42, 0.26);
+}
+
+.lot-btn-nuevo:active { transform: translateY(0); }
+
+
+.lot-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.lot-kpi {
+  min-width: 0;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid transparent;
+  animation: lot-aparecer 0.35s ease-out both;
+}
+
+.lot-kpi.vigentes { background: #F0FDF4; border-color: #BBF7D0; }
+.lot-kpi.por-vencer { background: #FFFBEB; border-color: #FDE68A; }
+.lot-kpi.vencidos { background: #FEF2F2; border-color: #FECACA; }
+
+.lot-kpi-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.lot-kpi-icono {
+  width: 54px;
+  height: 54px;
+  flex-shrink: 0;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.lot-kpi.vigentes .lot-kpi-icono { background: #DCFCE7; color: #08752E; }
+.lot-kpi.por-vencer .lot-kpi-icono { background: #FEF3C7; color: #F59E0B; }
+.lot-kpi.vencidos .lot-kpi-icono { background: #FEE2E2; color: #DC2626; }
+
+.lot-kpi-numero {
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.lot-kpi.vigentes .lot-kpi-numero { color: #08752E; }
+.lot-kpi.por-vencer .lot-kpi-numero { color: #B45309; }
+.lot-kpi.vencidos .lot-kpi-numero { color: #DC2626; }
+.lot-kpi-numero.cargando { opacity: 0.45; }
+
+.lot-kpi-titulo {
+  margin: 0 0 4px;
+  color: #0B1731;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.lot-kpi-desc {
+  margin: 0;
+  color: #64748B;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+.lot-filtros {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+  background: #FFFFFF;
+  border: 1px solid #E5EBF1;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  animation: lot-aparecer 0.35s ease-out both;
+}
+
+.lot-buscar {
+  position: relative;
+  flex: 1 1 50%;
+  min-width: 220px;
+}
+
+.lot-buscar i {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #00A83B;
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.lot-buscar input {
+  width: 100%;
+  height: 50px;
+  padding: 0 16px 0 44px;
+  border: 1px solid #D8E0EA;
+  border-radius: 12px;
+  background: #FFFFFF;
+  color: #0B1731;
+  font-size: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.lot-buscar input::placeholder { color: #94A3B8; }
+
+.lot-buscar input:focus,
+.lot-filtro select:focus {
+  outline: none;
+  border-color: #00A83B;
+  box-shadow: 0 0 0 3px rgba(0, 168, 59, 0.12);
+}
+
+.lot-filtro { flex: 0 1 24%; min-width: 180px; }
+.lot-filtro:last-child { flex-basis: 26%; }
+
+.lot-filtro label {
+  display: block;
+  margin-bottom: 6px;
+  color: #64748B;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.lot-filtro select {
+  width: 100%;
+  height: 50px;
+  padding: 0 12px;
+  border: 1px solid #D8E0EA;
+  border-radius: 12px;
+  background: #FFFFFF;
+  color: #0B1731;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+.lot-tabla-card {
+  padding: 22px 24px;
+  background: #FFFFFF;
+  border: 1px solid #E5EBF1;
+  border-radius: 20px;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+  animation: lot-aparecer 0.35s ease-out both;
+}
+
+.lot-tabla-scroll { overflow-x: auto; }
+
+.lot-tabla {
+  width: 100%;
+  min-width: 1080px;
+  border-collapse: collapse;
+}
+
+.lot-tabla thead th {
+  height: 50px;
+  padding: 0 12px;
+  background: #EAF7EE;
+  color: #075C2B;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.lot-tabla thead th:first-child { border-radius: 12px 0 0 0; }
+.lot-tabla thead th:last-child { border-radius: 0 12px 0 0; }
+
+.lot-tabla tbody td {
+  height: 60px;
+  padding: 0 12px;
+  border-bottom: 1px solid #F1F5F9;
+  color: #0B1731;
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+.lot-tabla tbody tr:last-child td { border-bottom: 0; }
+
+.lot-fila { transition: background-color 0.2s ease; }
+.lot-fila:hover td { background: #F5FBF7; }
+.lot-fila.fila-vencida td { background: #FFF1F2; }
+.lot-fila.fila-vencida:hover td { background: #FFE4E6; }
+.lot-fila.fila-por-vencer td { background: #FFFBEB; }
+.lot-fila.fila-por-vencer:hover td { background: #FEF3C7; }
+
+.lot-medicamento { font-weight: 600; }
+.lot-codigo { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; color: #475569; }
+.lot-fecha { white-space: nowrap; }
+.lot-cantidad { font-weight: 600; white-space: nowrap; }
+.lot-precio { font-weight: 700; white-space: nowrap; }
+
+.lot-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.lot-badge.vigentes { background: #DCFCE7; color: #08752E; }
+.lot-badge.proximos { background: #FEF3C7; color: #B45309; }
+.lot-badge.vencidos { background: #FEE2E2; color: #DC2626; }
+
+.lot-acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.lot-btn-accion {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.lot-btn-accion.editar {
+  border: 1px solid #DCFCE7;
+  background: #F0FDF4;
+  color: #08752E;
+}
+
+.lot-btn-accion.editar:hover { background: #DCFCE7; transform: translateY(-1px); }
+
+.lot-btn-accion.eliminar {
+  border: 1px solid #FEE2E2;
+  background: #FEF2F2;
+  color: #DC2626;
+}
+
+.lot-btn-accion.eliminar:hover { background: #FEE2E2; transform: translateY(-1px); }
+
+.lot-vacio {
+  padding: 28px 0;
+  color: #94A3B8;
+  font-size: 13px;
+  text-align: center;
+}
+
+.lot-vacio i {
+  display: block;
+  margin-bottom: 8px;
+  color: #A7E8BD;
+  font-size: 24px;
+}
+
+.lot-vacio p { margin: 0; }
+
+.lot-reintentar {
+  margin-top: 12px;
+  padding: 8px 16px;
+  border: 1px solid #00A83B;
+  border-radius: 10px;
+  background: #F0FDF4;
+  color: #08752E;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.lot-fefo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #F5F8FB;
+}
+
+.lot-fefo-icono {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background: #DCFCE7;
+  color: #08752E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
+
+.lot-fefo p {
+  margin: 0;
+  color: #64748B;
+  font-size: 12px;
+}
+
+.lot-fefo strong { color: #0B1731; }
+
+.lot-pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #F1F5F9;
+  color: #64748B;
+  font-size: 12.5px;
+}
+
+.lot-pag-controles {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lot-pag-btn {
+  min-width: 38px;
+  height: 38px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #D8E0EA;
+  border-radius: 10px;
+  background: #FFFFFF;
+  color: #64748B;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.lot-pag-btn:hover:not(:disabled) {
+  background: #F0FDF4;
+  border-color: #00A83B;
+  color: #08752E;
+}
+
+.lot-pag-btn.activa {
+  background: #00A83B;
+  border-color: #00A83B;
+  color: #FFFFFF;
+}
+
+.lot-pag-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+@keyframes lot-aparecer {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 1279px) {
+  .lot-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 1023px) {
+  .lot-filtros { flex-wrap: wrap; }
+  .lot-buscar { flex-basis: 100%; }
+  .lot-filtro, .lot-filtro:last-child { flex: 1 1 200px; }
+}
+
+@media (max-width: 640px) {
+  .lot-titulo { font-size: 30px; }
+  .lot-icono { width: 56px; height: 56px; font-size: 26px; }
+  .lot-btn-nuevo { width: 100%; }
+  .lot-kpis { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .lot-filtros, .lot-tabla-card { padding: 14px; }
+  .lot-tabla { min-width: 900px; }
+  .lot-pie { justify-content: center; }
+  .lot-pag-controles { flex-wrap: wrap; justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lot-hero, .lot-kpi, .lot-filtros, .lot-tabla-card { animation: none; }
+  .lot-btn-nuevo, .lot-buscar input, .lot-filtro select,
+  .lot-btn-accion, .lot-pag-btn, .lot-fila { transition: none; }
+}
